@@ -6,3 +6,7 @@
 /.vs
 /epp.commonlib/Debug
 /epp.commonlib/Release
+/epp.commonlib.tests/Debug
+/epp.commonlib.tests/Release
+/Debug
+/Release
