@@ -4,4 +4,5 @@
 
 /.vs/ePlusPlus/v15
 /.vs
-/epp.commonlib/Debug/epp.commonlib.tlog
+/epp.commonlib/Debug
+/epp.commonlib/Release
