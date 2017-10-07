@@ -13,6 +13,7 @@
       <AdditionalUsingDirectories>$(FrameworkPathOverride);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <FloatingPointExceptions>false</FloatingPointExceptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

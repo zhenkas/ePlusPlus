@@ -10,6 +10,9 @@
     <Filter Include="EPP\Holders">
       <UniqueIdentifier>{76e33f66-8aa5-4851-8f8d-7e7ff1e9d445}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EPP\Monitoring">
+      <UniqueIdentifier>{47b72913-f6f1-4d5e-9549-c11fc3bda266}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -19,8 +22,14 @@
     <ClInclude Include="EPP\Preprocessor\PP_DebugOnly.h">
       <Filter>EPP\Preprocessor</Filter>
     </ClInclude>
+    <ClInclude Include="EPP\Monitoring\PerfMon.h">
+      <Filter>EPP\Monitoring</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="EPP\Monitoring\PerfMon.cpp">
+      <Filter>EPP\Monitoring</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

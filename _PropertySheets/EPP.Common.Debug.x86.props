@@ -4,6 +4,10 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
     </Link>
