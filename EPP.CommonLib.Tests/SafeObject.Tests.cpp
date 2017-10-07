@@ -7,10 +7,16 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace EPP;
 using namespace EPP::Monitoring;
 
-struct S1 : ISafeObject
-{
 
-};
+namespace EPP::SafeObjectTests
+{
+	struct S1 : ISafeObject
+	{
+
+	};
+
+}
+using namespace EPP::SafeObjectTests;
 
 namespace EPP::Tests
 {		
