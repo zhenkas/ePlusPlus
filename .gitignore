@@ -10,3 +10,7 @@
 /EPP.CommonLib.tests/Release
 /Debug
 /Release
+/EPP.CommonLib/x64
+/EPP.CommonLib.Tests/x64
+/x64
+/TestResults
