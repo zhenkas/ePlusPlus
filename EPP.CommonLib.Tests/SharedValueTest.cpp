@@ -3,7 +3,7 @@
 #include <EPP\Holders\SharedValue.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-using namespace EPP;
+using namespace EPP::Holders;
 
 namespace EPP::ShareValueTests
 {

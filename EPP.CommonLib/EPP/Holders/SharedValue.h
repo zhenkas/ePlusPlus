@@ -2,7 +2,7 @@
 #include <EPP\Holders\SafeObject.h>
 
 
-namespace EPP
+namespace EPP::Holders
 {
 	template<typename T>
 	struct ISharedValue : ISafeObject

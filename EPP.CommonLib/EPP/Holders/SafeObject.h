@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <EPP\Preprocessor\PP_DebugOnly.h>
 
-namespace EPP
+namespace EPP::Holders
 {
 	struct ISafeObject;
 	typedef std::shared_ptr<ISafeObject> TSafePtr;
@@ -44,6 +44,7 @@ namespace EPP
 			}
 			else
 			{
+				//support sharing "this" in constructor of type "T"
 				out_ptr = TSafePtr(pNew->m_weakPtr);
 			}
 			PP_DEBUG_ONLY(pNew->m_typeName = typeid(T).name();)
@@ -55,8 +56,8 @@ namespace EPP
 			return &Create<T>(ptr);
 		}
 	private:
-		//This function declared to prevent create classes inherited from ISafeObject directly.
-		//Such classes must be created by SafeObject<T> template!
+		//This function declared to prevent creation like "new T()" and "T value".
+		//Classes inherited from ISafeObject must be created by SafeObject<T> methods!
 		virtual void This_Class_Must_Be_Created_Using_SafeObject_Template() = 0;
 	protected:
 		const ISafeObject & operator= (const ISafeObject & /*s*/) {
@@ -71,7 +72,7 @@ namespace EPP
 	{
 		inline ConstructT(int) {}
 	};
-#define CONSTRUCT ConstructT(0)
+#define CONSTRUCT EPP::Holders::ConstructT(0)
 
 	template<typename T>
 	struct SafeObject
@@ -172,7 +173,7 @@ namespace EPP
 			}
 			if (val->m_weakPtr.use_count() == 0)
 			{
-				//this case may be only if assigning from constructor of ISafeObject type to self, before safe ptr on this is created
+				//support sharing "this" in constructor of type "O"
 				safePtr = TSafePtr((ISafeObject *)val);
 				val->m_weakPtr = safePtr;
 			}
