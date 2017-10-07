@@ -1,28 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-      <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)..\EPP.CommonLib</AdditionalIncludeDirectories>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <StringPooling>true</StringPooling>
-      <AdditionalUsingDirectories>$(FrameworkPathOverride);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <FloatingPointExceptions>false</FloatingPointExceptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LinkIncremental>false</LinkIncremental>
     </Link>
   </ItemDefinitionGroup>
-  <Import Project="EPP.Common.Debug.x86.props" Condition="'$(Configuration)' == 'Debug' AND '$(Platform)'=='x86'"/>
-  <Import Project="EPP.Common.Debug.x64.props" Condition="'$(Configuration)' == 'Debug' AND '$(Platform)'=='x64'"/>
-  <Import Project="EPP.Common.Release.x86.props" Condition="'$(Configuration)' == 'Release' AND '$(Platform)'=='x86'"/>
-  <Import Project="EPP.Common.Release.x64.props" Condition="'$(Configuration)' == 'Release' AND '$(Platform)'=='x64'"/>
 </Project>
