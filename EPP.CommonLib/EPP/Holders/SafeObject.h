@@ -4,6 +4,7 @@
 #include <memory>
 #include <assert.h>
 #include <EPP\Preprocessor\PP_DebugOnly.h>
+#include <EPP\Preprocessor\PP_CONSTRUCT.h>
 
 namespace EPP::Holders
 {
@@ -72,7 +73,6 @@ namespace EPP::Holders
 	{
 		inline ConstructT(int) {}
 	};
-#define CONSTRUCT EPP::Holders::ConstructT(0)
 
 	template<typename T>
 	struct SafeObject
@@ -106,21 +106,15 @@ namespace EPP::Holders
 		template<typename ...TParams>
 		inline SafeObject(ConstructT, TParams&&... params)
 		{
-			CreateInstance<T>(static_cast<TParams&&>(params)...);
+			Construct<T>(static_cast<TParams&&>(params)...);
 		}
 		template <typename NewInstanceType = T, typename ...TParams>
-		inline NewInstanceType & CreateInstance(TParams&&... params)
+		inline NewInstanceType & Construct(TParams&&... params)
 		{
 			static_assert(std::is_base_of<T, NewInstanceType>::value, "The type is not same or base of T");
 			NewInstanceType & new_inst = ISafeObject::Create<NewInstanceType>(safePtr, std::forward<TParams>(params)...);
 			ptr = &new_inst;
 			return new_inst;
-		}
-		inline T * CreateInstanceFromType(unsigned int type)
-		{
-			typedef std::remove_const<T>::type TNonConst;
-			ptr = TNonConst::CreateFromType<TNonConst>(type, safePtr);
-			return ptr;
 		}
 		inline void ReleaseInstance()
 		{

@@ -60,6 +60,7 @@
     <ClInclude Include="EPP\Holders\SafeObject.h" />
     <ClInclude Include="EPP\Holders\SharedValue.h" />
     <ClInclude Include="EPP\Monitoring\PerfMon.h" />
+    <ClInclude Include="EPP\Preprocessor\PP_CONSTRUCT.h" />
     <ClInclude Include="EPP\Preprocessor\PP_DebugOnly.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

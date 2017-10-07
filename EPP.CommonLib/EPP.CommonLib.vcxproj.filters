@@ -28,6 +28,9 @@
     <ClInclude Include="EPP\Holders\SharedValue.h">
       <Filter>EPP\Holders</Filter>
     </ClInclude>
+    <ClInclude Include="EPP\Preprocessor\PP_CONSTRUCT.h">
+      <Filter>EPP\Preprocessor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
