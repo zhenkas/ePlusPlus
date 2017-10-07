@@ -25,6 +25,9 @@
     <ClInclude Include="EPP\Monitoring\PerfMon.h">
       <Filter>EPP\Monitoring</Filter>
     </ClInclude>
+    <ClInclude Include="EPP\Holders\SharedValue.h">
+      <Filter>EPP\Holders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
