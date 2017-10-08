@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="EPP::Holders::SafeObject&lt;*&gt;">
+    <DisplayString Condition="ptr == 0">nullptr</DisplayString>
+    <DisplayString Condition="ptr != 0">{*ptr,view(SO)} {{refs = {safePtr._Rep-&gt;_Uses}}}</DisplayString>
+    <Expand>
+      <ExpandedItem>ptr</ExpandedItem>
+    </Expand>
+  </Type>
+
+  <Type Name="EPP::Holders::SafeObject&lt;EPP::Holders::ISharedValue&lt;*&gt;&gt;">
+    <DisplayString Condition="ptr == 0">nullptr</DisplayString>
+    <DisplayString Condition="ptr != 0">{*ptr}</DisplayString>
+    <Expand>
+      <ExpandedItem>ptr</ExpandedItem>
+    </Expand>
+  </Type>
+
+  <Type Name="EPP::Holders::ISharedValue&lt;*&gt;">
+    <DisplayString>{{{value}}}</DisplayString>
+    <Expand>
+      <Item Name="value">value</Item>
+      <Item Name="ref_count">m_weakPtr._Rep-&gt;_Uses</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="EPP::Holders::ISafeObject" Inheritable="false">
+    <DisplayString>{this,p}</DisplayString>
+    <Expand HideRawView="false">
+    </Expand>
+  </Type>
+
+</AutoVisualizer>

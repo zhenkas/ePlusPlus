@@ -38,4 +38,7 @@
       <Filter>EPP\Monitoring</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="EPP.CommonLib.natvis" />
+  </ItemGroup>
 </Project>
