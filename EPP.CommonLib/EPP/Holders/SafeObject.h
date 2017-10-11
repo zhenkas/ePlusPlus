@@ -38,7 +38,7 @@ namespace EPP::Holders
 		{
 			static_assert(std::is_base_of<ISafeObject, T>::value, "The class must derive from ISafeObject");
 			T * pNew = new Creator<T>(std::forward<TParams>(params)...);
-			if (pNew->m_weakPtr.use_count() == 0)
+			if (pNew->m_weakPtr._Get() == __nullptr)
 			{
 				out_ptr = TSafePtr(pNew);
 				pNew->m_weakPtr = out_ptr;
@@ -165,14 +165,20 @@ namespace EPP::Holders
 				ReleaseInstance();
 				return;
 			}
-			if (val->m_weakPtr.use_count() == 0)
+			if (val->m_weakPtr._Get() == __nullptr)
 			{
-				//support sharing "this" in constructor of type "O"
+				//we are in the middle of constructor of "O" and its OK to wrap pointer here
 				safePtr = TSafePtr((ISafeObject *)val);
 				val->m_weakPtr = safePtr;
 			}
 			else {
-				safePtr = TSafePtr(val->m_weakPtr);
+				safePtr = val->m_weakPtr.lock();
+				if (safePtr.use_count() == 0)
+				{
+					//we are in the middle of destructor of "O", make null
+					ptr = __nullptr;
+					return;
+				}
 			}
 			ptr = val;
 		}

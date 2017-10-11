@@ -14,7 +14,32 @@ namespace EPP::SafeObjectTests
 	{
 
 	};
-
+	struct S1_DestructorCheck : ISafeObject
+	{
+		S1_DestructorCheck()
+		{
+			if (m_weakPtr._Get())
+			{
+				Assert::IsTrue(true, L"Ignore");
+			}
+			if (m_weakPtr.expired())
+			{
+				Assert::IsTrue(true, L"Ignore");
+			}
+			if (m_weakPtr.use_count() == 0)
+			{
+				Assert::IsTrue(true, L"Ignore");
+			}
+		}
+		virtual ~S1_DestructorCheck()
+		{
+			SafeObject<S1_DestructorCheck> destructor = this;
+			if (destructor)
+			{
+				Assert::Fail(L"Expected to be null");
+			}
+		}
+	};
 }
 using namespace EPP::SafeObjectTests;
 
@@ -32,6 +57,11 @@ namespace EPP::Tests
 			Assert::IsTrue(s1.ptr == nullptr, L"Should be null", LINE_INFO());
 			Assert::IsTrue(s1.safePtr.use_count() == 0, L"use_count should 0", LINE_INFO());
 		}
-
+		TEST_METHOD(CheckSelfFromDestructor)
+		{
+			{
+				SafeObject<S1_DestructorCheck> s1 = CONSTRUCT;
+			}
+		}
 	};
 }
