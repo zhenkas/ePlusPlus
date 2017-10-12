@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <EPP\Preprocessor\PP_DebugOnly.h>
 #include <EPP\Preprocessor\PP_CONSTRUCT.h>
+#include <EPP\Templates\t_is_safeobject.h>
 
 namespace EPP::Holders
 {
@@ -51,11 +52,6 @@ namespace EPP::Holders
 			PP_DEBUG_ONLY(pNew->m_typeName = typeid(T).name();)
 				return *pNew;
 		}
-		template <typename T>
-		inline static T * CreateFromType(unsigned int /*type*/, TSafePtr & ptr)
-		{
-			return &Create<T>(ptr);
-		}
 	private:
 		//This function declared to prevent creation like "new T()" and "T value".
 		//Classes inherited from ISafeObject must be created by SafeObject<T> methods!
@@ -69,10 +65,13 @@ namespace EPP::Holders
 		mutable TWeakPtr m_weakPtr;
 	};
 
-	struct ConstructT
+	namespace Internal
 	{
-		inline ConstructT(int) {}
-	};
+		struct ConstructT
+		{
+			inline ConstructT(int) {}
+		};
+	}
 
 	template<typename T>
 	struct SafeObject
@@ -104,7 +103,7 @@ namespace EPP::Holders
 			OperatorEqual(std::forward<O>(val));
 		}
 		template<typename ...TParams>
-		inline SafeObject(ConstructT, TParams&&... params)
+		inline SafeObject(Internal::ConstructT, TParams&&... params)
 		{
 			Construct<T>(static_cast<TParams&&>(params)...);
 		}
@@ -199,17 +198,34 @@ namespace EPP::Holders
 			ptr = val.ptr;
 			safePtr.swap(val.safePtr);
 		}
+		template<typename O, std::enable_if_t<std::is_base_of<ISafeObject, O>::value, bool> = true>
+		inline operator const O & () const
+		{
+			assert(ptr);
+			return static_cast<const O &>(*ptr);
+		}
+		template<typename O, std::enable_if_t<std::is_base_of<ISafeObject, O>::value, bool> = true>
+		inline operator O & () 
+		{
+			assert(ptr);
+			return static_cast<O &>(*ptr);
+		}
+		template<typename O, std::enable_if_t<!std::is_base_of<ISafeObject, O>::value && !Templates::is_safeobject<O>::value, bool> = true>
+		inline operator const O & () const
+		{
+			static_assert(false, "Invalid cast to const reference type from SafeObject<T>");
+		}
+		template<typename O, std::enable_if_t<!std::is_base_of<ISafeObject, O>::value && !Templates::is_safeobject<O>::value, bool> = true>
+		inline operator O & () const
+		{
+			static_assert(false, "Invalid cast to reference type from SafeObject<T>");
+		}
+		template<typename O, std::enable_if_t<Templates::is_safeobject<O>::value && !std::is_same<typename Templates::is_safeobject<O>::type, T>::value && !std::is_const_v<O>, bool> = true>
+		inline operator O & () const
+		{
+			static_assert(false, "Invalid cast to reference type from SafeObject<T>");
+		}
 
-		inline operator const T & () const
-		{
-			assert(ptr);
-			return *ptr;
-		}
-		inline operator T & ()
-		{
-			assert(ptr);
-			return *ptr;
-		}
 		template<typename O>
 		inline operator O * ()
 		{

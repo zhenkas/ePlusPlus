@@ -13,6 +13,9 @@
     <Filter Include="EPP\Monitoring">
       <UniqueIdentifier>{47b72913-f6f1-4d5e-9549-c11fc3bda266}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EPP\Templates">
+      <UniqueIdentifier>{172e3c1c-2a2e-4244-9647-eefa62061d5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -30,6 +33,9 @@
     </ClInclude>
     <ClInclude Include="EPP\Preprocessor\PP_CONSTRUCT.h">
       <Filter>EPP\Preprocessor</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Templates\t_is_safeobject.h">
+      <Filter>EPP\Templates</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

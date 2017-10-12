@@ -16,4 +16,4 @@
 		
 */
 
-#define CONSTRUCT EPP::Holders::ConstructT(0)
+#define CONSTRUCT EPP::Holders::Internal::ConstructT(0)
