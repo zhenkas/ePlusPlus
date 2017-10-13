@@ -192,30 +192,30 @@ namespace EPP::Holders
 			OperatorEqual(val.ptr);
 		}
 		template <typename O>
-		inline auto OperatorEqual(SafeObject<O> && val) -> typename std::enable_if<std::is_base_of<T, O>::value, void>::type
+		inline auto OperatorEqual(SafeObject<O> && val) -> typename std::enable_if_t<std::is_base_of_v<T, O>, void>
 		{
 			ReleaseInstance();
 			ptr = val.ptr;
 			safePtr.swap(val.safePtr);
 		}
-		template<typename O, std::enable_if_t<std::is_base_of<ISafeObject, O>::value, bool> = true>
+		template<typename O, std::enable_if_t<std::is_base_of_v<O, T>, bool> = true>
 		inline operator const O & () const
 		{
 			assert(ptr);
 			return static_cast<const O &>(*ptr);
 		}
-		template<typename O, std::enable_if_t<std::is_base_of<ISafeObject, O>::value, bool> = true>
+		template<typename O, std::enable_if_t<std::is_base_of_v<O, T>, bool> = true>
 		inline operator O & () 
 		{
 			assert(ptr);
 			return static_cast<O &>(*ptr);
 		}
-		template<typename O, std::enable_if_t<!std::is_base_of<ISafeObject, O>::value && !Templates::is_safeobject<O>::value, bool> = true>
+		template<typename O, std::enable_if_t<(!std::is_base_of_v<ISafeObject, O> && !Templates::is_safeobject<O>::value) || (std::is_base_of_v<ISafeObject, O> && !std::is_base_of_v<O, T>), bool> = true>
 		inline operator const O & () const
 		{
 			static_assert(false, "Invalid cast to const reference type from SafeObject<T>");
 		}
-		template<typename O, std::enable_if_t<!std::is_base_of<ISafeObject, O>::value && !Templates::is_safeobject<O>::value, bool> = true>
+		template<typename O, std::enable_if_t<!std::is_base_of_v<ISafeObject, O> && !Templates::is_safeobject<O>::value || (std::is_base_of_v<ISafeObject, O> && !std::is_base_of_v<O, T>), bool> = true>
 		inline operator O & () const
 		{
 			static_assert(false, "Invalid cast to reference type from SafeObject<T>");

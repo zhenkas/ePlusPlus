@@ -375,12 +375,12 @@ namespace EPP::Tests
 			CheckNotNull(s1, LINE_INFO());
 			CheckIsSame(s1, s2, LINE_INFO());
 			CheckDefaultVal1((Default1 &) s1, LINE_INFO());
-			CheckDefaultVal1((Default2 &) s1, LINE_INFO());
-			CheckDefaultVal2((Default2 &) s1, LINE_INFO());
+			CheckDefaultVal1((Default2 &) *s1, LINE_INFO());
+			CheckDefaultVal2((Default2 &) *s1, LINE_INFO());
 
 			CheckDefaultVal1(*(SafeObject<Default1>)s2, LINE_INFO());
 
-			CheckDefaultVal1(*(const SafeObject<Default1> &)s2, LINE_INFO());
+			CheckDefaultVal1(*(const SafeObject<Default2> &)s2, LINE_INFO());
 
 		}
 
