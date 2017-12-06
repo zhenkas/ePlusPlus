@@ -39,7 +39,7 @@ namespace EPP::Holders
 		{
 			static_assert(std::is_base_of_v<ISafeObject, T>, "The class must derive from ISafeObject");
 			T * pNew = new Creator<T>(std::forward<TParams>(params)...);
-			if (pNew->m_weakPtr._Get() == __nullptr)
+			if (pNew->m_weakPtr.expired())
 			{
 				out_ptr = TSafePtr(pNew);
 				pNew->m_weakPtr = out_ptr;
@@ -164,7 +164,8 @@ namespace EPP::Holders
 				ReleaseInstance();
 				return;
 			}
-			if (val->m_weakPtr._Get() == __nullptr)
+			std::weak_ptr<int> check_is_empty;
+			if (!val->m_weakPtr.owner_before(check_is_empty) && !check_is_empty.owner_before(val->m_weakPtr))
 			{
 				//we are in the middle of constructor of "O" and its OK to wrap pointer here
 				safePtr = TSafePtr((ISafeObject *)val);

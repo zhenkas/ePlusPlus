@@ -110,21 +110,6 @@ namespace EPP::SafeObjectTests
 	};
 	struct DestructorCheck : ISafeObject
 	{
-		DestructorCheck()
-		{
-			if (m_weakPtr._Get())
-			{
-				Assert::IsTrue(true, L"Ignore");
-			}
-			if (m_weakPtr.expired())
-			{
-				Assert::IsTrue(true, L"Ignore");
-			}
-			if (m_weakPtr.use_count() == 0)
-			{
-				Assert::IsTrue(true, L"Ignore");
-			}
-		}
 		virtual ~DestructorCheck()
 		{
 			SafeObject<DestructorCheck> destructor = this;
@@ -132,6 +117,14 @@ namespace EPP::SafeObjectTests
 			{
 				Assert::Fail(L"Expected to be null");
 			}
+		}
+	};
+
+	struct ConstuctorCheck : ISafeObject
+	{
+		ConstuctorCheck(SafeObject<ConstuctorCheck> & out_this)
+		{
+			out_this = this;
 		}
 	};
 
@@ -145,15 +138,15 @@ namespace EPP::SafeObjectTests
 	void CheckNotNull(SO && s1, const __LineInfo* pLineInfo)
 	{
 		Assert::IsTrue(s1.ptr != nullptr, L"Should be not null", pLineInfo);
-		Assert::IsTrue(s1->m_weakPtr._Get() == (ISafeObject *) s1, L"Weak pointer is invalid", pLineInfo);
-		Assert::IsTrue(s1->m_weakPtr._Get() == s1.safePtr._Get(), L"Weak and Safe pointers should be equal", pLineInfo);
+		Assert::IsTrue(s1->m_weakPtr.lock().get() == (ISafeObject *) s1, L"Weak pointer is invalid", pLineInfo);
+		Assert::IsTrue(s1->m_weakPtr.lock().get() == s1.safePtr.get(), L"Weak and Safe pointers should be equal", pLineInfo);
 		Assert::IsTrue(s1.safePtr.use_count() != 0, L"use_count should not be 0", pLineInfo);
 	}
 	template<typename SO>
 	void CheckMoved(SO && s1, const __LineInfo* pLineInfo)
 	{
 		Assert::IsTrue(s1.ptr != nullptr, L"Should be not null", pLineInfo);
-		Assert::IsTrue(s1->m_weakPtr._Get() == (ISafeObject *)s1, L"Weak pointer is invalid", pLineInfo);
+		Assert::IsTrue(s1->m_weakPtr.lock().get() == (ISafeObject *)s1, L"Weak pointer is invalid", pLineInfo);
 		Assert::IsTrue(s1->m_weakPtr.use_count() != 0, L"Weak pointer use_count() is 0", pLineInfo);
 		Assert::IsTrue(s1.safePtr.use_count() == 0, L"use_count should be 0", pLineInfo);
 	}
@@ -202,7 +195,7 @@ namespace EPP::SafeObjectTests
 	template<typename SO1, typename SO2>
 	void CheckIsSame(SO1 && s1, SO2 && s2, const __LineInfo* pLineInfo)
 	{
-		Assert::IsTrue(s1->m_weakPtr._Get() == s2->m_weakPtr._Get(), L"Expected to be same object", pLineInfo);
+		Assert::IsTrue(s1->m_weakPtr.lock() == s2->m_weakPtr.lock(), L"Expected to be same object", pLineInfo);
 	}
 }
 using namespace EPP::SafeObjectTests;
@@ -353,6 +346,18 @@ namespace EPP::Tests
 				SafeObject<DestructorCheck> s1 = CONSTRUCT;
 			}
 		}
+
+		TEST_METHOD(ShareSelfFromConstuctor)
+		{
+			{
+				SafeObject<ConstuctorCheck> s2;
+				SafeObject<ConstuctorCheck> s1 = { CONSTRUCT, s2 };
+				CheckNotNull(s1, LINE_INFO());
+				CheckNotNull(s2, LINE_INFO());
+				CheckIsSame(s1, s2, LINE_INFO());
+			}
+		}
+
 		TEST_METHOD(Upcast)
 		{
 			SafeObject<Default2> s2 = CONSTRUCT;
