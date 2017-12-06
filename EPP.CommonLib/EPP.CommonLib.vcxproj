@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -59,14 +59,25 @@
   <ItemGroup>
     <ClInclude Include="EPP\Holders\SafeObject.h" />
     <ClInclude Include="EPP\Holders\SharedValue.h" />
+    <ClInclude Include="EPP\Locks\AutoEvent.h" />
+    <ClInclude Include="EPP\Locks\Backoff.h" />
+    <ClInclude Include="EPP\Locks\ExclusiveSpinLock.h" />
+    <ClInclude Include="EPP\Locks\ManualEvent.h" />
     <ClInclude Include="EPP\Monitoring\PerfMon.h" />
+    <ClInclude Include="EPP\Monitoring\ThreadCounters.h" />
     <ClInclude Include="EPP\Preprocessor\PP_CONSTRUCT.h" />
     <ClInclude Include="EPP\Preprocessor\PP_DebugOnly.h" />
     <ClInclude Include="EPP\Templates\t_is_safeobject.h" />
+    <ClInclude Include="EPP\Test\ConcurrencyTest.h" />
+    <ClInclude Include="EPP\Threading\IThreadPool.h" />
+    <ClInclude Include="EPP\Threading\ThreadPool.h" />
+    <ClInclude Include="EPP\Time\DateTime.h" />
+    <ClInclude Include="EPP\Time\TimeDuration.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EPP\Monitoring\PerfMon.cpp" />
+    <ClCompile Include="EPP\Threading\ThreadPool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

@@ -16,6 +16,18 @@
     <Filter Include="EPP\Templates">
       <UniqueIdentifier>{172e3c1c-2a2e-4244-9647-eefa62061d5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EPP\Threading">
+      <UniqueIdentifier>{eb4065f5-3dce-41c7-82a9-2c3b09df0710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EPP\Locks">
+      <UniqueIdentifier>{548692e8-28e8-4433-b48c-f03d41d0244d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EPP\Test">
+      <UniqueIdentifier>{19bf2a29-1a78-4f46-8dad-843e7f2775a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EPP\Time">
+      <UniqueIdentifier>{6697619c-1adb-43be-875f-c68974702a6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -37,11 +49,42 @@
     <ClInclude Include="EPP\Templates\t_is_safeobject.h">
       <Filter>EPP\Templates</Filter>
     </ClInclude>
+    <ClInclude Include="EPP\Threading\ThreadPool.h">
+      <Filter>EPP\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Threading\IThreadPool.h" />
+    <ClInclude Include="EPP\Locks\ExclusiveSpinLock.h">
+      <Filter>EPP\Locks</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Locks\Backoff.h">
+      <Filter>EPP\Locks</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Test\ConcurrencyTest.h">
+      <Filter>EPP\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Time\DateTime.h">
+      <Filter>EPP\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Time\TimeDuration.h">
+      <Filter>EPP\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Locks\ManualEvent.h">
+      <Filter>EPP\Locks</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Locks\AutoEvent.h">
+      <Filter>EPP\Locks</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Monitoring\ThreadCounters.h">
+      <Filter>EPP\Monitoring</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="EPP\Monitoring\PerfMon.cpp">
       <Filter>EPP\Monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="EPP\Threading\ThreadPool.cpp">
+      <Filter>EPP\Threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
