@@ -23,23 +23,23 @@ namespace EPP::Tests
 
 		TEST_METHOD(TestOnSafeObject)
 		{
-			static_assert(is_safeobject<SafeObject<S1>>::value, "Expected to be safe object");
-			static_assert(is_safeobject<SafeObject<S1>&>::value, "Expected to be safe object");
-			static_assert(is_safeobject<SafeObject<S1>&&>::value, "Expected to be safe object");
-			static_assert(is_safeobject<const SafeObject<S1>>::value, "Expected to be safe object");
-			static_assert(is_safeobject<const SafeObject<S1>&>::value, "Expected to be safe object");
-			static_assert(is_safeobject<const SafeObject<S1>&&>::value, "Expected to be safe object");
+			static_assert(is_safeobject_v<SafeObject<S1>>, "Expected to be safe object");
+			static_assert(is_safeobject_v<SafeObject<S1>&>, "Expected to be safe object");
+			static_assert(is_safeobject_v<SafeObject<S1>&&>, "Expected to be safe object");
+			static_assert(is_safeobject_v<const SafeObject<S1>>, "Expected to be safe object");
+			static_assert(is_safeobject_v<const SafeObject<S1>&>, "Expected to be safe object");
+			static_assert(is_safeobject_v<const SafeObject<S1>&&>, "Expected to be safe object");
 		}
 		TEST_METHOD(TestNotSafeObject)
 		{
-			static_assert(!is_safeobject<S1>::value, "Expected to be NOT safe object");
-			static_assert(!is_safeobject<S1&>::value, "Expected to be NOT safe object");
-			static_assert(!is_safeobject<S1&&>::value, "Expected to be NOT safe object");
-			static_assert(!is_safeobject<const S1>::value, "Expected to NOT be safe object");
-			static_assert(!is_safeobject<const S1&>::value, "Expected to NOT be safe object");
-			static_assert(!is_safeobject<const S1&&>::value, "Expected to NOT be safe object");
+			static_assert(!is_safeobject_v<S1>, "Expected to be NOT safe object");
+			static_assert(!is_safeobject_v<S1&>, "Expected to be NOT safe object");
+			static_assert(!is_safeobject_v<S1&&>, "Expected to be NOT safe object");
+			static_assert(!is_safeobject_v<const S1>, "Expected to NOT be safe object");
+			static_assert(!is_safeobject_v<const S1&>, "Expected to NOT be safe object");
+			static_assert(!is_safeobject_v<const S1&&>, "Expected to NOT be safe object");
 
-			static_assert(!is_safeobject<int>::value, "Expected to be NOT safe object");
+			static_assert(!is_safeobject_v<int>, "Expected to be NOT safe object");
 		}
 	};
 }

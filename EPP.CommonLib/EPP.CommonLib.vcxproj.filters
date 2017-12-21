@@ -28,6 +28,9 @@
     <Filter Include="EPP\Time">
       <UniqueIdentifier>{6697619c-1adb-43be-875f-c68974702a6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EPP\Async">
+      <UniqueIdentifier>{a005688d-9839-424b-9b3d-5b4b4b24ebd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -45,9 +48,6 @@
     </ClInclude>
     <ClInclude Include="EPP\Preprocessor\PP_CONSTRUCT.h">
       <Filter>EPP\Preprocessor</Filter>
-    </ClInclude>
-    <ClInclude Include="EPP\Templates\t_is_safeobject.h">
-      <Filter>EPP\Templates</Filter>
     </ClInclude>
     <ClInclude Include="EPP\Threading\ThreadPool.h">
       <Filter>EPP\Threading</Filter>
@@ -76,6 +76,21 @@
     </ClInclude>
     <ClInclude Include="EPP\Monitoring\ThreadCounters.h">
       <Filter>EPP\Monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Templates\t_safeobject_resolver.h">
+      <Filter>EPP\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Templates\t_type_resolver.h">
+      <Filter>EPP\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Templates\t_function_resolver.h">
+      <Filter>EPP\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Templates\t_lambda_resolver.h">
+      <Filter>EPP\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Holders\SafeLambda.h">
+      <Filter>EPP\Holders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

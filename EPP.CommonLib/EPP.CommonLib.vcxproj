@@ -57,6 +57,7 @@
     <Import Project="$(SolutionDir)_PropertySheets\EPP.Common.props" />
   </ImportGroup>
   <ItemGroup>
+    <ClInclude Include="EPP\Holders\SafeLambda.h" />
     <ClInclude Include="EPP\Holders\SafeObject.h" />
     <ClInclude Include="EPP\Holders\SharedValue.h" />
     <ClInclude Include="EPP\Locks\AutoEvent.h" />
@@ -67,7 +68,10 @@
     <ClInclude Include="EPP\Monitoring\ThreadCounters.h" />
     <ClInclude Include="EPP\Preprocessor\PP_CONSTRUCT.h" />
     <ClInclude Include="EPP\Preprocessor\PP_DebugOnly.h" />
-    <ClInclude Include="EPP\Templates\t_is_safeobject.h" />
+    <ClInclude Include="EPP\Templates\t_function_resolver.h" />
+    <ClInclude Include="EPP\Templates\t_lambda_resolver.h" />
+    <ClInclude Include="EPP\Templates\t_safeobject_resolver.h" />
+    <ClInclude Include="EPP\Templates\t_type_resolver.h" />
     <ClInclude Include="EPP\Test\ConcurrencyTest.h" />
     <ClInclude Include="EPP\Threading\IThreadPool.h" />
     <ClInclude Include="EPP\Threading\ThreadPool.h" />

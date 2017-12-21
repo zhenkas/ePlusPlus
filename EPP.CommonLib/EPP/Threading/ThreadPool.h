@@ -11,6 +11,8 @@ namespace EPP::Threading
 	struct ThreadPool : IThreadPool
 	{
 		void Initialize(int numThreads);
+	public:
+		virtual void EnqueueFunction(EPosition position, AutoSafeLambda<void(void)> safeLambda) override;
 	protected:
 		void ThreadFunc();
 	protected:

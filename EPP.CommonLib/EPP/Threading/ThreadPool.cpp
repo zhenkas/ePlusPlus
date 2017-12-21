@@ -31,4 +31,9 @@ namespace EPP::Threading
 
 	}
 
+	void ThreadPool::EnqueueFunction(EPosition position, AutoSafeLambda<void(void)> safeLambda)
+	{
+
+	}
+
 }

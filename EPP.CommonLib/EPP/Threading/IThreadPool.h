@@ -1,6 +1,7 @@
 #pragma once
 
 #include <EPP\Holders\SafeObject.h>
+#include <EPP\Holders\SafeLambda.h>
 
 
 namespace EPP::Threading
@@ -9,5 +10,12 @@ namespace EPP::Threading
 
 	struct IThreadPool : ISafeObject
 	{
+		enum EPosition
+		{
+			request,
+			response,
+			first,
+		};
+		virtual void EnqueueFunction(EPosition position, AutoSafeLambda<void(void)> safeLambda) = 0;
 	};
 }

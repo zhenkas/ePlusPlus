@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <EPP\Preprocessor\PP_DebugOnly.h>
 #include <EPP\Preprocessor\PP_CONSTRUCT.h>
-#include <EPP\Templates\t_is_safeobject.h>
+#include <EPP\Templates\t_safeobject_resolver.h>
 
 namespace EPP::Holders
 {
@@ -80,18 +80,20 @@ namespace EPP::Holders
 		{
 			virtual void F()
 			{
-				static_assert(std::is_base_of_v<ISafeObject, T>, "The class is not derived from ISafeObject");
 			}
 		};
 
 		typedef decltype(((TCheckIsSafeObject *)(0))->F()) TCheck2;
 
+
 		inline SafeObject()
 		{
+			static_assert(std::is_base_of_v<ISafeObject, T>, "The class is not derived from ISafeObject");
 			ptr = NULL;
 		}
 		inline SafeObject(std::nullptr_t)
 		{
+			static_assert(std::is_base_of_v<ISafeObject, T>, "The class is not derived from ISafeObject");
 			ptr = NULL;
 		}
 		typedef typename std::remove_const<T>::type type;
@@ -100,11 +102,13 @@ namespace EPP::Holders
 		template<typename O>
 		inline SafeObject(O && val, decltype(((SafeObject<T>*)0)->OperatorEqual(std::forward<O>(val)))* = 0)
 		{
+			static_assert(std::is_base_of_v<ISafeObject, T>, "The class is not derived from ISafeObject");
 			OperatorEqual(std::forward<O>(val));
 		}
 		template<typename ...TParams>
 		inline SafeObject(Internal::ConstructT, TParams&&... params)
 		{
+			static_assert(std::is_base_of_v<ISafeObject, T>, "The class is not derived from ISafeObject");
 			Construct<T>(static_cast<TParams&&>(params)...);
 		}
 		template <typename NewInstanceType = T, typename ...TParams>
@@ -221,7 +225,7 @@ namespace EPP::Holders
 		{
 			static_assert(false, "Invalid cast to reference type from SafeObject<T>");
 		}
-		template<typename O, std::enable_if_t<Templates::is_safeobject_v<O> && !std::is_same_v<Templates::get_safeobject_t<O>, T> && !std::is_const_v<O>, bool> = true>
+		template<typename O, std::enable_if_t<Templates::is_safeobject_v<O> && !std::is_same_v<Templates::get_isafeobject_t<O>, T> && !std::is_const_v<O>, bool> = true>
 		inline operator O & () const
 		{
 			static_assert(false, "Invalid cast to reference type from SafeObject<T>");
