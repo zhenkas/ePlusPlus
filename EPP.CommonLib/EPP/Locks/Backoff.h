@@ -22,7 +22,7 @@ namespace EPP::Locks
 		{
 			_mm_pause();
 		}
-		return (ticks + ctx ^ i) | 1;
+		return (uint32_t)(ticks + ctx ^ i) | 1;
 	}
 
 	struct BackoffData

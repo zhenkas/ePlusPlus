@@ -20,7 +20,7 @@ namespace EPP::Locks
 		__declspec(noinline) void _TryLockLoop()
 		{
 			uint32_t ctx;
-			ctx = (uint32_t) &ctx;
+			ctx = (uint32_t)(size_t) &ctx;
 			while (true)
 			{
 				ctx = BackoffExp(ctx);
