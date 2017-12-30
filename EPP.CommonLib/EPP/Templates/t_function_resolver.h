@@ -3,10 +3,9 @@
 
 namespace EPP::Templates
 {
-	struct FunctionResolverID {};
 
 	template<int priority>
-	using FunctionResolver = type_resolver_base<FunctionResolverID, priority>;
+	struct FunctionResolver;
 
 	template<typename T>
 	using resolve_function = resolve_type<FunctionResolver<1>, T>;

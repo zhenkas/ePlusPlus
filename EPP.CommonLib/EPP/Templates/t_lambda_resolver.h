@@ -3,10 +3,9 @@
 
 namespace EPP::Templates
 {
-	struct LambdaResolverID {};
 
 	template<int priority>
-	using LambdaResolver = type_resolver_base<LambdaResolverID, priority>;
+	struct LambdaResolver;
 
 	template<typename T>
 	using resolve_lambda = resolve_type<LambdaResolver<1>, std::remove_const_t<std::remove_reference_t<T>>>;
