@@ -17,7 +17,7 @@ namespace EPP::Templates
 	struct SafeObjectResolver;
 
 	template<typename T>
-	using resolve_safeobject = resolve_type<SafeObjectResolver<1>, std::remove_const_t<std::remove_reference_t<T>>>;
+	using resolve_safeobject = type_resolver<SafeObjectResolver<1>, std::remove_const_t<std::remove_reference_t<T>>>;
 
 
 	template<typename T>

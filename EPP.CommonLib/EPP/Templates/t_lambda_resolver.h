@@ -8,7 +8,7 @@ namespace EPP::Templates
 	struct LambdaResolver;
 
 	template<typename T>
-	using resolve_lambda = resolve_type<LambdaResolver<1>, std::remove_const_t<std::remove_reference_t<T>>>;
+	using resolve_lambda = type_resolver<LambdaResolver<1>, std::remove_const_t<std::remove_reference_t<T>>>;
 
 	template<typename TLambda>
 	struct type_resolver<LambdaResolver<1>, TLambda, make_void<decltype(&TLambda::operator())>>

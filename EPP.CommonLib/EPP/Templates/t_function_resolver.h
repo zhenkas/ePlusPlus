@@ -8,7 +8,7 @@ namespace EPP::Templates
 	struct FunctionResolver;
 
 	template<typename T>
-	using resolve_function = resolve_type<FunctionResolver<1>, T>;
+	using resolve_function = type_resolver<FunctionResolver<1>, T>;
 
 	template<typename TRet, typename ...TParams>
 	struct function_params {};
