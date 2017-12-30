@@ -23,7 +23,7 @@ namespace EPP::Templates
 	struct search_type_resolver : search_type_resolver<typename TResolver::get_next_resolver, T, TCheck> {};
 
 	template<typename TResolver, typename T>
-	struct search_type_resolver<TResolver, T, make_void<decltype(type_resolver<TResolver, T, void>())>> : type_resolver<TResolver, T, void> {};
+	struct search_type_resolver<TResolver, T, void> : type_resolver<TResolver, T, void> {};
 
 	template<typename TResolver, typename T>
 	using resolve_type = search_type_resolver<TResolver, T, void>;
