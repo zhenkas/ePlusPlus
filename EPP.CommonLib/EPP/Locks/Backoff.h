@@ -15,26 +15,22 @@ namespace EPP::Locks
 			return 1;
 		unsigned __int64 ticks = (unsigned __int64)__rdtsc();
 		size_t ticksPtr = size_t(&ticks);
-		ticks ^= ticks >> 8;
-		ticks ^= ticks >> 16;
-		ticksPtr ^= ticksPtr >> 8;
-		ticksPtr ^= ticksPtr >> 16;
-		uint32_t mult1 = (ctx % g_backoffData.mult1) | 1;
-		uint32_t randByte = g_backoffData.randBytes[BYTE(ticksPtr ^ ticks)];
+		uint32_t mult1 = ((ctx + ticksPtr) % g_backoffData.mult1) | 1;
+		uint32_t randByte = g_backoffData.randBytes[BYTE(ctx + ticks)];
 		volatile size_t i = randByte*mult1*g_backoffData.mult2;
 		while (i-- != 0)
 		{
 			_mm_pause();
 		}
-		return (ctx ^ randByte) | 1;
+		return (ticks + ctx ^ i) | 1;
 	}
 
 	struct BackoffData
 	{
 		uint32_t numThreads = std::thread::hardware_concurrency();
 		double effectiveness = numThreads < 2 ? 0 : 1.0 / ((1.0 / log2(numThreads)) + (1.0 / log2(numThreads) / numThreads));
-		uint32_t mult1 = effectiveness * 35;
-		uint32_t mult2 = effectiveness * 20;
+		uint32_t mult1 = (uint32_t)(effectiveness * 35);
+		uint32_t mult2 = (uint32_t)(effectiveness * 20);
 		BYTE randBytes[256] =
 		{
 			11	,

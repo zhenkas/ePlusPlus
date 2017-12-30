@@ -15,8 +15,9 @@ namespace EPP::Monitoring
 		}
 		void BeginMonitor()
 		{
+			m_effectiveCounters.resize(m_counters.size());
 			MemoryBarrier();
-			m_effectiveCounters = m_counters;
+			memcpy(m_effectiveCounters.data(), m_counters.data(), sizeof(uint64_t) * m_counters.size());
 			m_startTime = DateTime::Now();
 		}
 		void Inc(size_t threadIndex)
@@ -25,8 +26,10 @@ namespace EPP::Monitoring
 		}
 		void EndMonitor()
 		{
+			std::vector<uint64_t> snapShot;
+			snapShot.resize(m_counters.size());
 			MemoryBarrier();
-			std::vector<__int64> snapShot = m_counters;
+			memcpy(snapShot.data(), m_counters.data(), sizeof(uint64_t) * m_counters.size());
 			m_endTime = DateTime::Now();
 			for (size_t i = 0; i < m_effectiveCounters.size(); ++i)
 			{
@@ -35,8 +38,8 @@ namespace EPP::Monitoring
 		}
 		DateTime m_startTime;
 		DateTime m_endTime;
-		std::vector<__int64> m_effectiveCounters;
-		std::vector<__int64> m_counters;
+		std::vector<uint64_t> m_effectiveCounters;
+		std::vector<uint64_t> m_counters;
 		size_t m_numThreads;
 	};
 

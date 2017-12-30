@@ -24,10 +24,10 @@ namespace EPP::Locks
 			while (true)
 			{
 				ctx = BackoffExp(ctx);
-				if (m_lockState == 0 && InterlockedBitTestAndSet(&m_lockState, 0) == 0)
+				if (InterlockedBitTestAndSet(&m_lockState, 0) == 0)
 					break;
 				SwitchToThread();
-				if (m_lockState == 0 && InterlockedBitTestAndSet(&m_lockState, 0) == 0)
+				if (InterlockedBitTestAndSet(&m_lockState, 0) == 0)
 					break;
 			};
 		}

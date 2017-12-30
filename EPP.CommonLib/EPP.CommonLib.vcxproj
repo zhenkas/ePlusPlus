@@ -64,6 +64,7 @@
     <ClInclude Include="EPP\Locks\Backoff.h" />
     <ClInclude Include="EPP\Locks\ExclusiveSpinLock.h" />
     <ClInclude Include="EPP\Locks\ManualEvent.h" />
+    <ClInclude Include="EPP\Memory\ObjectPool.h" />
     <ClInclude Include="EPP\Monitoring\PerfMon.h" />
     <ClInclude Include="EPP\Monitoring\ThreadCounters.h" />
     <ClInclude Include="EPP\Preprocessor\PP_CONSTRUCT.h" />

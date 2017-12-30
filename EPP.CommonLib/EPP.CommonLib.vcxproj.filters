@@ -31,6 +31,9 @@
     <Filter Include="EPP\Async">
       <UniqueIdentifier>{a005688d-9839-424b-9b3d-5b4b4b24ebd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EPP\Memory">
+      <UniqueIdentifier>{ed77e159-6382-49e3-96b2-64d68d0f039f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -91,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="EPP\Holders\SafeLambda.h">
       <Filter>EPP\Holders</Filter>
+    </ClInclude>
+    <ClInclude Include="EPP\Memory\ObjectPool.h">
+      <Filter>EPP\Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
