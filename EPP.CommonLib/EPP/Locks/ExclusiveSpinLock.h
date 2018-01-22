@@ -27,7 +27,7 @@ namespace EPP::Locks
 				if (InterlockedBitTestAndSet(&m_lockState, 0) == 0)
 					break;
 				SwitchToThread();
-				if (InterlockedBitTestAndSet(&m_lockState, 0) == 0)
+				if (m_lockState == 0 && InterlockedBitTestAndSet(&m_lockState, 0) == 0)
 					break;
 			};
 		}

@@ -58,12 +58,12 @@ namespace EPP::Tests
 				DateTime m_testStartTime;
 				DateTime m_testEndTime;
 			};
-			TestProvider * testProviderPtr = new TestProvider(8);
+			TestProvider * testProviderPtr = new TestProvider(64);
 			TestProvider & testProvider = *testProviderPtr;
 			using TLock = ExclusiveSpinLock;
 			TLock lock;
 			volatile uint64_t check_sum = 0;
-			SyncConcurrencyTest(2000ms, testProvider.m_numThreads, testProvider, [&](size_t threadIndex)
+			SyncConcurrencyTest(1000ms, testProvider.m_numThreads, testProvider, [&](size_t threadIndex)
 			{
 				testProvider.Inc(threadIndex);
 				lock.ExclusiveLock();
@@ -87,9 +87,12 @@ namespace EPP::Tests
 			{
 				totalPerSec += testProvider.m_effectiveCounters[i];
 				Assert::IsTrue(testProvider.m_effectiveCounters[i] <= testProvider.m_counters[i], L"Expected <= 0");
+			}
+			msg.AppendFormat(L"Total: %I64u/s ", totalPerSec);
+			for (size_t i = 0; i < testProvider.m_numThreads; i++)
+			{
 				msg.AppendFormat(L"%I64u(+%I64u) ", testProvider.m_effectiveCounters[i], testProvider.m_counters[i] - testProvider.m_effectiveCounters[i]);
 			}
-			msg.AppendFormat(L" Total: %I64u/s", totalPerSec);
 			Logger::WriteMessage(msg);
 		}
 	};
