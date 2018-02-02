@@ -23,7 +23,7 @@
     <ProjectGuid>{833CFAA5-6A80-4C81-B952-1F9303635A87}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>eppcommonlibtests</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
     <ProjectName>EPP.CommonLib.Tests</ProjectName>
   </PropertyGroup>
