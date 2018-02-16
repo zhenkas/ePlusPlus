@@ -98,6 +98,9 @@
     <ClInclude Include="EPP\Memory\ObjectPool.h">
       <Filter>EPP\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="EPP\Locks\ExclusiveSpinLockRef.h">
+      <Filter>EPP\Locks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />

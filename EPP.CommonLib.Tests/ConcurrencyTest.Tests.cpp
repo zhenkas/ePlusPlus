@@ -58,7 +58,7 @@ namespace EPP::Tests
 				DateTime m_testStartTime;
 				DateTime m_testEndTime;
 			};
-			TestProvider * testProviderPtr = new TestProvider(64);
+			TestProvider * testProviderPtr = new TestProvider(8);
 			TestProvider & testProvider = *testProviderPtr;
 			using TLock = ExclusiveSpinLock;
 			TLock lock;

@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 #include <EPP\Holders\SafeObject.h>
 #include <EPP\Monitoring\PerfMon.h>
+#include "EPP\Holders\SafeObject.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace EPP::Holders;
@@ -132,23 +133,20 @@ namespace EPP::SafeObjectTests
 	void CheckNull(SO && s1, const __LineInfo* pLineInfo)
 	{
 		Assert::IsTrue(s1.ptr == nullptr, L"Should be null", pLineInfo);
-		Assert::IsTrue(s1.safePtr.use_count() == 0, L"use_count should be 0", pLineInfo);
 	}
 	template<typename SO>
 	void CheckNotNull(SO && s1, const __LineInfo* pLineInfo)
 	{
 		Assert::IsTrue(s1.ptr != nullptr, L"Should be not null", pLineInfo);
-		Assert::IsTrue(s1->m_weakPtr.lock().get() == (ISafeObject *) s1, L"Weak pointer is invalid", pLineInfo);
-		Assert::IsTrue(s1->m_weakPtr.lock().get() == s1.safePtr.get(), L"Weak and Safe pointers should be equal", pLineInfo);
-		Assert::IsTrue(s1.safePtr.use_count() != 0, L"use_count should not be 0", pLineInfo);
+		Assert::IsTrue(s1.ptr->m_safeobject_state > 0, L"use_count should not be 0", pLineInfo);
 	}
 	template<typename SO>
 	void CheckMoved(SO && s1, const __LineInfo* pLineInfo)
 	{
-		Assert::IsTrue(s1.ptr != nullptr, L"Should be not null", pLineInfo);
-		Assert::IsTrue(s1->m_weakPtr.lock().get() == (ISafeObject *)s1, L"Weak pointer is invalid", pLineInfo);
-		Assert::IsTrue(s1->m_weakPtr.use_count() != 0, L"Weak pointer use_count() is 0", pLineInfo);
-		Assert::IsTrue(s1.safePtr.use_count() == 0, L"use_count should be 0", pLineInfo);
+		//Assert::IsTrue(s1.ptr != nullptr, L"Should be not null", pLineInfo);
+		//Assert::IsTrue(s1->m_weakPtr.lock().get() == (ISafeObject *)s1, L"Weak pointer is invalid", pLineInfo);
+		//Assert::IsTrue(s1->m_weakPtr.use_count() != 0, L"Weak pointer use_count() is 0", pLineInfo);
+		//Assert::IsTrue(s1.safePtr.use_count() == 0, L"use_count should be 0", pLineInfo);
 	}
 	template<typename SO>
 	void CheckDefaultVal1(SO && s1, const __LineInfo* pLineInfo)
@@ -195,8 +193,16 @@ namespace EPP::SafeObjectTests
 	template<typename SO1, typename SO2>
 	void CheckIsSame(SO1 && s1, SO2 && s2, const __LineInfo* pLineInfo)
 	{
-		Assert::IsTrue(s1->m_weakPtr.lock() == s2->m_weakPtr.lock(), L"Expected to be same object", pLineInfo);
+		Assert::IsTrue(s1.ptr == s2.ptr, L"Expected to be same object", pLineInfo);
 	}
+
+	template<typename SO>
+	void CheckRefCount(SO && s1, long expecteRefCount, const __LineInfo* pLineInfo)
+	{
+		Assert::IsNotNull(s1.ptr, L"Expected not NULL", pLineInfo);
+		Assert::AreEqual(expecteRefCount, s1.ptr->m_safeobject_state >> 1, L"Expected ref count incorrect", pLineInfo);
+	}
+
 }
 using namespace EPP::SafeObjectTests;
 
@@ -223,7 +229,6 @@ namespace EPP::Tests
 		}
 		TEST_METHOD(ConstructWithTempObject)
 		{
-
 			SafeObject<Default1> s1 = CONSTRUCT;
 			SafeObject<Default1> s2 = std::move(s1);
 
@@ -412,6 +417,8 @@ namespace EPP::Tests
 			CheckIsSame(s1, s4, LINE_INFO());
 			CheckIsSame(s2, s4, LINE_INFO());
 			CheckIsSame(s3, s4, LINE_INFO());
+
+			CheckRefCount(s4, 4, LINE_INFO());
 
 			CheckDefaultVal1( s1.StaticCast<DefaultVirtual1>(), LINE_INFO());
 			CheckDefaultVal1(*s1.DynamicCast<DefaultVirtual2>(), LINE_INFO());

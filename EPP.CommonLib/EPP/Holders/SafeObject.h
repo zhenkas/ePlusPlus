@@ -6,63 +6,42 @@
 #include <EPP\Preprocessor\PP_DebugOnly.h>
 #include <EPP\Preprocessor\PP_CONSTRUCT.h>
 #include <EPP\Templates\t_safeobject_resolver.h>
+#include <EPP\Locks\ExclusiveSpinLockRef.h>
 
 namespace EPP::Holders
 {
-	struct ISafeObject;
-	typedef std::shared_ptr<ISafeObject> TSafePtr;
-	typedef std::weak_ptr<ISafeObject> TWeakPtr;
+
+	template <typename T>
+	struct SOCreator : public T
+	{
+	public:
+		template <typename ...TParams>
+		inline SOCreator(TParams&&... params) : T(std::forward<TParams>(params)...) {}
+	private:
+		virtual void This_Class_Must_Be_Created_Using_SafeObject_Template() override {}
+#pragma warning(suppress: 4250) // "inherits via dominance"
+	};
+
 
 	struct ISafeObject
 	{
 	protected:
-		inline ISafeObject() PP_DEBUG_ONLY(:m_typeName("Not created using ISafeObject::Create method")) {}
+		inline ISafeObject() : m_safeobject_state(INC_VALUE) {}
 		inline ISafeObject(const ISafeObject &) {}
+		inline ISafeObject(ISafeObject &&) {}
 	public:
 		virtual ~ISafeObject() {}
-
 	protected:
-		template <typename T>
-		struct Creator : public T
-		{
-		public:
-			template <typename ...TParams>
-			inline Creator(TParams&&... params) : T(std::forward<TParams>(params)...) {}
-		private:
-			virtual void This_Class_Must_Be_Created_Using_SafeObject_Template() override {}
-#pragma warning(suppress: 4250) // "inherits via dominance"
-		};
-
-	public:
-		template <typename T, typename ...TParams>
-		inline static T & Create(TSafePtr & out_ptr, TParams&&... params)
-		{
-			static_assert(std::is_base_of_v<ISafeObject, T>, "The class must derive from ISafeObject");
-			T * pNew = new Creator<T>(std::forward<TParams>(params)...);
-			if (pNew->m_weakPtr.expired())
-			{
-				out_ptr = TSafePtr(pNew);
-				pNew->m_weakPtr = out_ptr;
-			}
-			else
-			{
-				//support sharing "this" in constructor of type "T"
-				out_ptr = TSafePtr(pNew->m_weakPtr);
-			}
-			PP_DEBUG_ONLY(pNew->m_typeName = typeid(T).name();)
-				return *pNew;
-		}
+		const ISafeObject & operator= (const ISafeObject & /*s*/) { return *this; }
+		const ISafeObject & operator= (const ISafeObject && /*s*/) { return *this; }
 	private:
-		//This function declared to prevent creation like "new T()" and "T value".
-		//Classes inherited from ISafeObject must be created by SafeObject<T> methods!
 		virtual void This_Class_Must_Be_Created_Using_SafeObject_Template() = 0;
-	protected:
-		const ISafeObject & operator= (const ISafeObject & /*s*/) {
-			return *this;
-		}
 	public:
 		PP_DEBUG_ONLY(const char * m_typeName);
-		mutable TWeakPtr m_weakPtr;
+
+		static constexpr long INC_VALUE = 0x2;
+		static constexpr long DESTROYED_VALUE = 0x80000001;
+		mutable volatile long m_safeobject_state; //ref count and lock
 	};
 
 	namespace Internal
@@ -72,24 +51,18 @@ namespace EPP::Holders
 			inline ConstructT(int) {}
 		};
 	}
-
+	using ::EPP::Locks::ExclusiveSpinLockRef;
 	template<typename T>
 	struct SafeObject
 	{
-		struct TCheckIsSafeObject
-		{
-			virtual void F()
-			{
-			}
-		};
-
-		typedef decltype(((TCheckIsSafeObject *)(0))->F()) TCheck2;
-
-
 		inline SafeObject()
 		{
 			static_assert(std::is_base_of_v<ISafeObject, T>, "The class is not derived from ISafeObject");
 			ptr = NULL;
+		}
+		inline ~SafeObject()
+		{
+			ReleaseInstance();
 		}
 		inline SafeObject(std::nullptr_t)
 		{
@@ -103,26 +76,44 @@ namespace EPP::Holders
 		inline SafeObject(O && val, decltype(((SafeObject<T>*)0)->OperatorEqual(std::forward<O>(val)))* = 0)
 		{
 			static_assert(std::is_base_of_v<ISafeObject, T>, "The class is not derived from ISafeObject");
+			ptr = NULL;
 			OperatorEqual(std::forward<O>(val));
 		}
 		template<typename ...TParams>
 		inline SafeObject(Internal::ConstructT, TParams&&... params)
 		{
 			static_assert(std::is_base_of_v<ISafeObject, T>, "The class is not derived from ISafeObject");
-			Construct<T>(static_cast<TParams&&>(params)...);
+			ptr = new SOCreator<T>(std::forward<TParams>(params)...);
 		}
 		template <typename NewInstanceType = T, typename ...TParams>
 		inline NewInstanceType & Construct(TParams&&... params)
 		{
 			static_assert(std::is_base_of<T, NewInstanceType>::value, "The type is not same or base of T");
-			NewInstanceType & new_inst = ISafeObject::Create<NewInstanceType>(safePtr, std::forward<TParams>(params)...);
-			ptr = &new_inst;
+
+			T * pNew = new SOCreator<T>(std::forward<TParams>(params)...);
+			ptr = pNew;
 			return new_inst;
 		}
 		inline void ReleaseInstance()
 		{
-			safePtr = TSafePtr();
-			ptr = NULL;
+			if (ptr)
+			{
+				auto & state = ptr->m_safeobject_state;
+				ExclusiveSpinLockRef::ExclusiveLock(state);
+				long newstate = state;
+				newstate -= ISafeObject::INC_VALUE;
+				if (newstate < ISafeObject::INC_VALUE)
+				{
+					newstate = ISafeObject::DESTROYED_VALUE;
+				}
+				state = newstate;
+				ExclusiveSpinLockRef::ExclusiveRelease(state);
+				if (newstate < 0)
+				{
+					delete ptr;
+				}
+				ptr = NULL;
+			}
 		}
 		inline unsigned int GetInstanceType() const
 		{
@@ -164,26 +155,31 @@ namespace EPP::Holders
 		{
 			static_assert(std::is_base_of_v<T, O>, "Type O is not equal or base of T");
 
-			if (!val) {
+			if (!val)
+			{
+
 				ReleaseInstance();
 				return;
 			}
-			std::weak_ptr<int> check_is_empty;
-			if (!val->m_weakPtr.owner_before(check_is_empty) && !check_is_empty.owner_before(val->m_weakPtr))
+			auto & state = val->m_safeobject_state;
+			if (state < 0)
 			{
-				//we are in the middle of constructor of "O" and its OK to wrap pointer here
-				safePtr = TSafePtr((ISafeObject *)val);
-				val->m_weakPtr = safePtr;
+				ReleaseInstance();
+				return;
 			}
-			else {
-				safePtr = val->m_weakPtr.lock();
-				if (safePtr.use_count() == 0)
-				{
-					//we are in the middle of destructor of "O", make null
-					ptr = __nullptr;
-					return;
-				}
+			if (val == ptr)
+				return;
+
+			ReleaseInstance();
+
+			ExclusiveSpinLockRef::ExclusiveLock(state);
+			if (state < 0)
+			{
+				ExclusiveSpinLockRef::ExclusiveRelease(state);
+				return;
 			}
+			state += ISafeObject::INC_VALUE;
+			ExclusiveSpinLockRef::ExclusiveRelease(state);
 			ptr = val;
 		}
 		template <typename O>
@@ -199,9 +195,9 @@ namespace EPP::Holders
 		template <typename O>
 		inline auto OperatorEqual(SafeObject<O> && val) -> std::enable_if_t<std::is_base_of_v<T, O>, void>
 		{
-			ReleaseInstance();
-			ptr = val.ptr;
-			safePtr.swap(val.safePtr);
+			auto tmp = val.ptr;
+			val.ptr = (O*)ptr;
+			ptr = tmp;
 		}
 		template<typename O, std::enable_if_t<std::is_base_of_v<O, T>, bool> = true>
 		inline operator const O & () const
@@ -210,7 +206,7 @@ namespace EPP::Holders
 			return static_cast<const O &>(*ptr);
 		}
 		template<typename O, std::enable_if_t<std::is_base_of_v<O, T>, bool> = true>
-		inline operator O & () 
+		inline operator O & ()
 		{
 			assert(ptr);
 			return static_cast<O &>(*ptr);
@@ -290,7 +286,6 @@ namespace EPP::Holders
 			return ptr->operator[](static_cast<TIndex&&>(i));
 		}
 	public:
-		TSafePtr safePtr;
 		T * ptr;
 	};
 }

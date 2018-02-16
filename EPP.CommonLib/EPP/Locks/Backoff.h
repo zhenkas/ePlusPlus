@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <intrin.h>
+#include <thread>
 
 namespace EPP::Locks
 {
