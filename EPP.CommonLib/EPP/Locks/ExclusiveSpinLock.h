@@ -1,5 +1,6 @@
 #pragma once
 #include "Backoff.h"
+#include "ExclusiveSpinLockRef.h"
 
 namespace EPP::Locks
 {
@@ -8,33 +9,16 @@ namespace EPP::Locks
 		ExclusiveSpinLock() : m_lockState(0){}
 		ExclusiveSpinLock(const ExclusiveSpinLock &) = delete;
 		ExclusiveSpinLock(ExclusiveSpinLock &&) = delete;
+		ExclusiveSpinLock & operator=(const ExclusiveSpinLock &) = delete;
+		ExclusiveSpinLock & operator=(ExclusiveSpinLock &&) = delete;
 
 		inline void ExclusiveLock()
 		{
-			if (m_lockState == 0 && InterlockedBitTestAndSet(&m_lockState, 0) == 0)
-			{
-				return;
-			}
-			_TryLockLoop();
-		}
-		__declspec(noinline) void _TryLockLoop()
-		{
-			uint32_t ctx;
-			ctx = (uint32_t)(size_t) &ctx;
-			while (true)
-			{
-				ctx = BackoffExp(ctx);
-				if (InterlockedBitTestAndSet(&m_lockState, 0) == 0)
-					break;
-				SwitchToThread();
-				if (m_lockState == 0 && InterlockedBitTestAndSet(&m_lockState, 0) == 0)
-					break;
-			};
+			ExclusiveSpinLockRef::ExclusiveLock(m_lockState);
 		}
 		inline void ExclusiveRelease()
 		{
-			m_lockState = 0;
-			_ReadWriteBarrier();
+			ExclusiveSpinLockRef::ExclusiveRelease(m_lockState);
 		}
 		volatile long m_lockState;
 	};
